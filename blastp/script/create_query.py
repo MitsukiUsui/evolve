@@ -40,9 +40,9 @@ def create_query(inFilepath, outFilepath, addDecoy=False):
 				
 				if addDecoy:
 					#decoy reverse
-					drHeader=">DRF{0}|{1}".format(frameNum,seq_record.id.strip())
-					drSeq=querySeq[::-1]
-					decoy_lst.append((drHeader,drSeq))
+					#drHeader=">DRF{0}|{1}".format(frameNum,seq_record.id.strip())
+					#drSeq=querySeq[::-1]
+					#decoy_lst.append((drHeader,drSeq))
 				   
 					#decoy shuffle
 					dsHeader=">DSF{0}|{1}".format(frameNum,seq_record.id.strip())
