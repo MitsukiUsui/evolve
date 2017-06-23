@@ -11,6 +11,13 @@ do
 	queryFilepath=${dir}/query/${basename}.query
 	outFilepath=${dir}/result/${basename}.xml
 
+	#delete old if exists
+	if [ -e ${outFilepath} ]; 
+	then
+		rm ${outFilepath} 
+		echo -e "DELETED old "${outFilepath}"\n"
+	fi
+
 	blastp -db ${dbName}\
 		   -query ${queryFilepath}\
 		   -out ${outFilepath}\

@@ -205,8 +205,7 @@ def create_query(inFilepath, outFilepath, addDecoy=False, ab_lst=None):
 				f.write(header+'\n')
 				f.write(seq+'\n')
 		
-	print("\t\tcreated from {0}/{1} CDSs".format(processedCDS, totalCDS))
-	print("\t\tOUT :{}".format(outFilepath))
+	print("\t\t{0} queries created from {1}/{2} CDSs".format(len(query_lst)+len(decoy_lst), processedCDS, totalCDS))
 
 		
 def main(genusNum):
@@ -214,22 +213,28 @@ def main(genusNum):
 	
 	catalogFilepath="/home/mitsuki/altorf/evolve/createdatabase/out/genus_{}.txt".format(genusNum)
 	catalog_df=pd.read_csv(catalogFilepath)
-	dbFilepath="/data/mitsuki/data/blast/db/genus_{}.fasta".format(genusNum)
-	abDb=AaBias(dbFilepath)
-
-	print("DONE calculating Amino Acid Bias of {}".format(dbFilepath))
+	totalFilepath="/data/mitsuki/data/blast/db/genus_{}.fasta".format(genusNum)
+	
+	abTotal=AaBias(totalFilepath)
+	print("DONE calculating Amino Acid Bias of {}".format(totalFilepath))
 	
 	for i,basename in enumerate(catalog_df["ftp_basename"]):
 		print("PROCESSING {}/{} ({})...".format(i+1,catalog_df.shape[0],basename))
 		
 		inFilepath="/data/mitsuki/data/refseq/cds_from_genomic/{}_cds_from_genomic.fna".format(basename)
 		outFilepath="/data/mitsuki/out/altorf/evolve/query/{}.query".format(basename)
-		
+	
 		ab_lst=get_ab_lst(inFilepath)
 		print("\tDONE calculating Amino Acid Bias for 6 frame")
 		
+		reportFilepath="/home/mitsuki/altorf/evolve/createquery/out/{}.kl".format(basename)
+		with open(reportFilepath, 'w') as f:
+			for i in range(6):
+				f.write(str(AaBias.kl(abTotal, ab_lst[i]))+'\n')
+		print("\tDONE outputing kl divergence for 6 frame: {}".format(reportFilepath))
+		
 		create_query(inFilepath, outFilepath, addDecoy=True, ab_lst=ab_lst)
-		print("\tDONE creating query") 
+		print("\tDONE creating query: {}".format(outFilepath)) 
 		
 if __name__=="__main__":
 	main(sys.argv[1])
